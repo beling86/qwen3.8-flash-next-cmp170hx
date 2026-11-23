@@ -1,0 +1,5 @@
+ARG BASE_IMAGE=vllm-cmp170hx:qwen3.8-flash-next-pre-dflash2
+FROM ${BASE_IMAGE}
+
+COPY patch_dflash2.py /tmp/patch_dflash2.py
+RUN /workspace/vllm/.venv/bin/python3 /tmp/patch_dflash2.py && rm -f /tmp/patch_dflash2.py

@@ -32,8 +32,10 @@ COPY vllm-0.29.1rc1.dev402+ga5a30471f-cp38-abi3-manylinux_2_28_x86_64.whl /works
 COPY repo/requirements/tested-constraints.txt /workspace/tested-constraints.txt
 COPY ple_ssd_io.so /workspace/optimization/ple_ssd_io.so
 
-# Copy patched vllm source tree
+# Copy patched vllm source tree and apply DFlash2 + hybrid KV packing patches
 COPY vllm-src /workspace/vllm/src
+COPY repo/docker/patch_dflash2.py /tmp/patch_dflash2.py
+RUN python3 /tmp/patch_dflash2.py && rm -f /tmp/patch_dflash2.py
 
 # Install precompiled vLLM wheel and requirements using cu130 torch backend
 RUN uv pip install --python "$VLLM_VENV/bin/python" --torch-backend=cu130 \
