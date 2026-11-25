@@ -1,0 +1,696 @@
+{
+  "tag": "baseline",
+  "url": "http://127.0.0.1:8002/v1",
+  "model": "qwen3.8-flash-next-dflash2",
+  "ts": 1795625630,
+  "vram_idle": {
+    "used_mib": 64078,
+    "free_mib": 834,
+    "total_mib": 65536
+  },
+  "kv_metrics_line": "vllm:cache_config_info{_block_size_resolved=\"True\",block_size=\"816\",cache_dtype=\"fp8\",effective_attention_block_size=\"3264\",enable_mamba_fine_grained_prefix_cache=\"False\",enable_prefix_caching=\"True\",engine=\"0\",gpu_memory_utilization=\"0.92\",is_attention_free=\"False\",kv_cache_dtype_skip_layers=\"[]\",kv_cache_layout=\"None\",kv_cache_max_concurrency=\"2.2018348623853212\",kv_cache_memory_bytes=\"10450000000\",kv_cache_size_tokens=\"577197\",kv_offloading_backend=\"native\",kv_offloading_size=\"None\",kv_sharing_fast_prefill=\"False\",mamba_block_size=\"3264\",mamba_cache_dtype=\"auto\",mamba_cache_mode=\"align\",mamba_page_size_padded=\"None\",mamba_ssm_cache_dtype=\"float32\",num_cpu_blocks=\"None\",num_gpu_blocks=\"240\",num_gpu_blocks_override=\"None\",prefix_cache_retention_interval=\"0\",prefix_caching_hash_algo=\"sha256\",prefix_match_unit=\"None\",replayssm_buffer_len=\"16\",skip_page_size_padded=\"None\",sliding_window=\"None\",swa_bounded_replay=\"True\",use_kda_recoverssm=\"False\",use_replayssm=\"False\",user_specified_block_size=\"False\",user_specified_mamba_block_size=\"False\"} 1.0",
+  "decode_1u_greedy": {
+    "list": {
+      "prompt_tokens": 113,
+      "cached_tokens": 0,
+      "completion_tokens": 600,
+      "ttft_s": 0.2764,
+      "decode_s": 3.9915,
+      "total_s": 4.2679,
+      "prefill_tok_s": 408.8,
+      "decode_tok_s": 150.1,
+      "wall_tok_s": 140.6,
+      "reasoning_len": 1982,
+      "content_len": 0,
+      "reasoning_text": "We need answer user's request: output numbered list integers 1 to 300, one per line, format \"1 = one\", etc. Need likely English words? Examples: 1 = one, 2 = two, 3 = three. Need produce all 300 lines, no ellipses, begin immediately. Need ensure exact format. Need maybe hyphen? For numbers 21 etc likely \"twenty-one\"? Need infer. They say integers from 1 to 300, format: 1 = one, 2 = two, 3 = three. Need output all. Need be careful with English number words. Could use standard American English: 21 = twenty-one, 100 = one hundred, 101 = one hundred one? Or \"one hundred and one\"? Example only simple. Need choose consistent. Since \"one hundred\" maybe no \"and\". For 101 maybe \"one hundred one\" or \"one hundred and one\". Which is expected? Could be from function name fn-parity-v1-1u-list? Maybe parity? Not relevant. Need output exactly numbered list. Need no extra text. Need generate 300 lines. Need ensure no mistakes. Could manually generate? Need reliable. We can construct in final. Need maybe use lowercase words. Need hyphen for 21-99 except multiples of ten. For hundreds: \"one hundred\", \"two hundred\", ... \"three hundred\". For 101: \"one hundred one\" (no and) likely. For 111: \"one hundred eleven\". For 121: \"one hundred twenty-one\". For 200: \"two hundred\". For 300: \"three hundred\". Need ensure 1-300. Could generate programmatically mentally? Need avoid missing. Since final can be long. Need maybe use a systematic pattern. Need output 300 lines. Need count. Could create list in chunks of 100. Need ensure line numbers match words. Let's plan.\n\nNeed produce:\n1 = one\n2 = two\n...\n10 = ten\n11 = eleven\n12 = twelve\n13 = thirteen\n14 = fourteen\n15 = fifteen\n16 = sixteen\n17 = seventeen\n18 = eighteen\n19 = nineteen\n20 = twenty\n21 = twenty-one\n...\n30 = thirty\n31 = thirty-one\n...\n40 = forty (not fourty)\n41 = forty-one\n50 = fifty\n60 = sixty\n70 = seventy\n80 = eighty\n90 = ninety\n100 = one hundred\n101 = one hundred one\n...\n110 = one hundred ten\n111 = one hundred eleven\n...\n1",
+      "content_text": "",
+      "logprobs_head": []
+    },
+    "code": {
+      "prompt_tokens": 112,
+      "cached_tokens": 0,
+      "completion_tokens": 600,
+      "ttft_s": 0.9235,
+      "decode_s": 4.2989,
+      "total_s": 5.2224,
+      "prefill_tok_s": 121.3,
+      "decode_tok_s": 139.3,
+      "wall_tok_s": 114.9,
+      "reasoning_len": 2614,
+      "content_len": 0,
+      "reasoning_text": "We need answer user's request: \"Write a complete, well-commented Python implementation of an in-memory LRU cache with per-key TTL expiration, thread safety via threading.RLock, O(1) get/put via a custom doubly-linked list, and a unittest suite.\"\n\nNeed produce final code likely in Python. Need include implementation and unittest suite. Need ensure O(1) get/put, per-key TTL, thread safety RLock, custom doubly linked list. Could provide single file with class and tests. Need maybe mention usage. Need be complete. Need think about design.\n\nRequirements:\n- in-memory LRU cache\n- per-key TTL expiration\n- thread safety via threading.RLock\n- O(1) get/put via custom doubly-linked list\n- unittest suite\n\nNeed implement custom doubly linked list nodes with prev/next. OrderedDict could be used but requirement custom DLL. Need O(1) get/put. Need handle TTL. Options:\n- Store expiry timestamp per key in node or dict. On get, if expired, remove node and return sentinel/raise KeyError. On put, update node, move to head, set expiry. Need capacity.\n- For lazy expiration: get checks expiry. But if expired entries remain, capacity may be occupied. Could also purge expired on put? But O(1) put? If we only remove expired on access, capacity can be filled with expired entries and put evicts LRU maybe expired or not. That's okay? But if expired entries occupy capacity, get returns miss, but put may evict expired LRU. Need ensure O(1). Could maintain no background timer. Per-key TTL expiration can be lazy. But if tests expect expired entries not counted? Usually LRU with TTL: expired entries should be considered absent; capacity may include expired until accessed/evicted. Could implement optional purge on put? But O(1) cannot scan all expired. Could maintain expiration heap for active cleanup, but not required. Need maybe ensure put when full evicts LRU; if LRU expired, it's effectively free. But if many expired entries not accessed, capacity can be full of expired and put evicts them one by one O(1) each. Good.\n- Need thread safety: RLock around public methods. Internal methods assume lock held.\n- Need sentinel head/tail for DLL.\n- Need get returns value or default? Could implement get(key, default=None) and __getitem__ raising KeyError. Need tests.\n- Need put(key, value, ttl=None). ttl seconds. If ttl <=0? Could treat as immediate expiration? Maybe if ttl is None no expiration. If ttl <=0, store expired? Better: if ttl is not None and ttl <= 0, do not store? Or store with expiry now and immediately remove? For simplicity: if ttl <= 0, remove existing and return? But put should maybe store with",
+      "content_text": "",
+      "logprobs_head": [
+        {
+          "token": "We",
+          "logprob": -0.001914
+        },
+        {
+          "token": " need",
+          "logprob": -6.7e-05
+        },
+        {
+          "token": " answer",
+          "logprob": -0.261713
+        },
+        {
+          "token": " user",
+          "logprob": -0.10155
+        },
+        {
+          "token": "'s",
+          "logprob": -0.585076
+        },
+        {
+          "token": " request",
+          "logprob": -0.001415
+        },
+        {
+          "token": ":",
+          "logprob": -0.16055
+        },
+        {
+          "token": " \"",
+          "logprob": -0.216037
+        },
+        {
+          "token": "Write",
+          "logprob": -0.003454
+        },
+        {
+          "token": " a",
+          "logprob": -4.1e-05
+        },
+        {
+          "token": " complete",
+          "logprob": -0.001283
+        },
+        {
+          "token": ",",
+          "logprob": -3.1e-05
+        },
+        {
+          "token": " well",
+          "logprob": -3.7e-05
+        },
+        {
+          "token": "-comment",
+          "logprob": -7.7e-05
+        },
+        {
+          "token": "ed",
+          "logprob": -3.1e-05
+        },
+        {
+          "token": " Python",
+          "logprob": -1.3e-05
+        },
+        {
+          "token": " implementation",
+          "logprob": -4.6e-05
+        },
+        {
+          "token": " of",
+          "logprob": -0.002921
+        },
+        {
+          "token": " an",
+          "logprob": -5.4e-05
+        },
+        {
+          "token": " in",
+          "logprob": -0.000992
+        },
+        {
+          "token": "-memory",
+          "logprob": -1.8e-05
+        },
+        {
+          "token": " L",
+          "logprob": -0.000135
+        },
+        {
+          "token": "RU",
+          "logprob": -0.000108
+        },
+        {
+          "token": " cache",
+          "logprob": -4.9e-05
+        },
+        {
+          "token": " with",
+          "logprob": -7.7e-05
+        },
+        {
+          "token": " per",
+          "logprob": -5e-06
+        },
+        {
+          "token": "-key",
+          "logprob": -1.1e-05
+        },
+        {
+          "token": " TTL",
+          "logprob": -2.1e-05
+        },
+        {
+          "token": " expiration",
+          "logprob": -6.1e-05
+        },
+        {
+          "token": ",",
+          "logprob": -6.4e-05
+        },
+        {
+          "token": " thread",
+          "logprob": -0.000613
+        },
+        {
+          "token": " safety",
+          "logprob": -8e-05
+        },
+        {
+          "token": " via",
+          "logprob": -1.2e-05
+        },
+        {
+          "token": " threading",
+          "logprob": -1e-05
+        },
+        {
+          "token": ".R",
+          "logprob": -6.2e-05
+        },
+        {
+          "token": "Lock",
+          "logprob": -9e-05
+        },
+        {
+          "token": ",",
+          "logprob": -1.6e-05
+        },
+        {
+          "token": " O",
+          "logprob": -0.000112
+        },
+        {
+          "token": "(",
+          "logprob": -6e-06
+        },
+        {
+          "token": "1",
+          "logprob": -3e-06
+        },
+        {
+          "token": ")",
+          "logprob": -4e-06
+        },
+        {
+          "token": " get",
+          "logprob": -0.000684
+        },
+        {
+          "token": "/",
+          "logprob": -0.000198
+        },
+        {
+          "token": "put",
+          "logprob": -1.7e-05
+        },
+        {
+          "token": " via",
+          "logprob": -1e-05
+        },
+        {
+          "token": " a",
+          "logprob": -0.001356
+        },
+        {
+          "token": " custom",
+          "logprob": -0.000467
+        },
+        {
+          "token": " doubly",
+          "logprob": -4.6e-05
+        },
+        {
+          "token": "-linked",
+          "logprob": -0.000997
+        },
+        {
+          "token": " list",
+          "logprob": -0.00279
+        },
+        {
+          "token": ",",
+          "logprob": -1e-05
+        },
+        {
+          "token": " and",
+          "logprob": -3e-06
+        },
+        {
+          "token": " a",
+          "logprob": -4.9e-05
+        },
+        {
+          "token": " unittest",
+          "logprob": -6.1e-05
+        },
+        {
+          "token": " suite",
+          "logprob": -2.4e-05
+        },
+        {
+          "token": ".\"",
+          "logprob": -0.011633
+        },
+        {
+          "token": "\n\n",
+          "logprob": -0.363845
+        },
+        {
+          "token": "Need",
+          "logprob": -0.331592
+        },
+        {
+          "token": " produce",
+          "logprob": -0.359244
+        },
+        {
+          "token": " final",
+          "logprob": -0.599542
+        },
+        {
+          "token": " code",
+          "logprob": -0.879267
+        },
+        {
+          "token": " likely",
+          "logprob": -0.865611
+        },
+        {
+          "token": " in",
+          "logprob": -0.975986
+        },
+        {
+          "token": " Python",
+          "logprob": -1.000826
+        }
+      ]
+    },
+    "prose": {
+      "prompt_tokens": 120,
+      "cached_tokens": 0,
+      "completion_tokens": 600,
+      "ttft_s": 0.2766,
+      "decode_s": 4.5172,
+      "total_s": 4.7938,
+      "prefill_tok_s": 433.9,
+      "decode_tok_s": 132.6,
+      "wall_tok_s": 125.2,
+      "reasoning_len": 2754,
+      "content_len": 0,
+      "reasoning_text": "We need to respond to user: \"[fn-parity-v1-1u-prose] Write an exhaustive engineering handbook on serving transformer language models in production with numbered sections (1. through 15.) covering tokenisation, paged KV cache, continuous batching, speculative decoding, quantization, CUDA graphs, and observability. Begin immediately with section 1.\"\n\nNeed produce final answer only, starting with \"1.\" likely. Need exhaustive engineering handbook numbered sections 1 through 15. Must cover tokenisation, paged KV cache, continuous batching, speculative decoding, quantization, CUDA graphs, observability. Need likely include all topics across 15 sections. Need be prose? \"fn-parity-v1-1u-prose\" maybe format? Just write handbook. Begin immediately with section 1. No preamble.\n\nNeed ensure numbered sections 1. through 15. Could have subsections? Probably okay. Need exhaustive. Need cover production serving transformer LMs. Include tokenization, paged KV cache, continuous batching, speculative decoding, quantization, CUDA graphs, observability. Maybe sections:\n1. Scope and production architecture\n2. Tokenization and text processing\n3. Model representation and inference graph\n4. Memory hierarchy and KV cache design\n5. Paged KV cache\n6. Scheduling and continuous batching\n7. Prefill vs decode and chunked prefill\n8. Quantization and precision\n9. Speculative decoding\n10. CUDA graphs and kernel execution\n11. Parallelism and distributed serving\n12. Model loading, weights, and runtime integration\n13. API, streaming, and client contracts\n14. Observability, metrics, tracing, logging\n15. Operations, capacity planning, failure modes, testing\n\nNeed ensure covers required. Could be long. Need maybe include engineering details, formulas, examples. Need not too insane but exhaustive. Need start immediately with section 1. Use numbered sections exactly \"1.\" etc. Could include subheadings within. Need maybe avoid markdown headings? Numbered sections. Could use bold? It's okay. Need final answer only.\n\nNeed think about content. Let's craft comprehensive handbook.\n\nNeed maybe mention tokenization: BPE, SentencePiece, tokenizer config, special tokens, byte fallback, normalization, Unicode, truncation, EOS, BOS, padding, tokenizer latency, caching, multilingual, tokenizer versioning, chat templates, tool schemas, structured output, token budget, prompt compression, tokenizer mismatches.\n\nPaged KV cache: attention KV, memory fragmentation, block/page size, block table, copy-on-write, prefix caching, radix tree, eviction, multi-tenant, sequence length, block allocation, memory pool, async copy, offload, quantized KV, sliding window, cross-attention? For decoder-only. Need mention vLLM PagedAttention.\n\nContinuous batching: scheduler, waiting",
+      "content_text": "",
+      "logprobs_head": [
+        {
+          "token": "We",
+          "logprob": -0.000482
+        },
+        {
+          "token": " need",
+          "logprob": -0.000296
+        },
+        {
+          "token": " to",
+          "logprob": -0.835327
+        },
+        {
+          "token": " respond",
+          "logprob": -0.203911
+        },
+        {
+          "token": " to",
+          "logprob": -0.001943
+        },
+        {
+          "token": " user",
+          "logprob": -0.003239
+        },
+        {
+          "token": ":",
+          "logprob": -0.023252
+        },
+        {
+          "token": " \"[",
+          "logprob": -0.36781
+        },
+        {
+          "token": "fn",
+          "logprob": -8.4e-05
+        },
+        {
+          "token": "-par",
+          "logprob": -0.000225
+        },
+        {
+          "token": "ity",
+          "logprob": -6.3e-05
+        },
+        {
+          "token": "-v",
+          "logprob": -0.000291
+        },
+        {
+          "token": "1",
+          "logprob": -8.2e-05
+        },
+        {
+          "token": "-",
+          "logprob": -0.000171
+        },
+        {
+          "token": "1",
+          "logprob": -4.7e-05
+        },
+        {
+          "token": "u",
+          "logprob": -5.7e-05
+        },
+        {
+          "token": "-pro",
+          "logprob": -0.000198
+        },
+        {
+          "token": "se",
+          "logprob": -9.5e-05
+        },
+        {
+          "token": "]",
+          "logprob": -0.009252
+        },
+        {
+          "token": " Write",
+          "logprob": -0.576699
+        },
+        {
+          "token": " an",
+          "logprob": -0.000168
+        },
+        {
+          "token": " exhaustive",
+          "logprob": -0.000594
+        },
+        {
+          "token": " engineering",
+          "logprob": -0.008858
+        },
+        {
+          "token": " handbook",
+          "logprob": -3.3e-05
+        },
+        {
+          "token": " on",
+          "logprob": -0.023694
+        },
+        {
+          "token": " serving",
+          "logprob": -2.4e-05
+        },
+        {
+          "token": " transformer",
+          "logprob": -0.000285
+        },
+        {
+          "token": " language",
+          "logprob": -0.000336
+        },
+        {
+          "token": " models",
+          "logprob": -3.6e-05
+        },
+        {
+          "token": " in",
+          "logprob": -6.4e-05
+        },
+        {
+          "token": " production",
+          "logprob": -6.5e-05
+        },
+        {
+          "token": " with",
+          "logprob": -0.000208
+        },
+        {
+          "token": " numbered",
+          "logprob": -0.000133
+        },
+        {
+          "token": " sections",
+          "logprob": -3.4e-05
+        },
+        {
+          "token": " (",
+          "logprob": -0.000145
+        },
+        {
+          "token": "1",
+          "logprob": -6e-06
+        },
+        {
+          "token": ".",
+          "logprob": -0.001973
+        },
+        {
+          "token": " through",
+          "logprob": -6.2e-05
+        },
+        {
+          "token": " ",
+          "logprob": -3.2e-05
+        },
+        {
+          "token": "1",
+          "logprob": -9.2e-05
+        },
+        {
+          "token": "5",
+          "logprob": -0.000251
+        },
+        {
+          "token": ".)",
+          "logprob": -0.00122
+        },
+        {
+          "token": " covering",
+          "logprob": -0.000487
+        },
+        {
+          "token": " token",
+          "logprob": -0.000132
+        },
+        {
+          "token": "isation",
+          "logprob": -0.001948
+        },
+        {
+          "token": ",",
+          "logprob": -1.8e-05
+        },
+        {
+          "token": " p",
+          "logprob": -0.000304
+        },
+        {
+          "token": "aged",
+          "logprob": -1e-06
+        },
+        {
+          "token": " KV",
+          "logprob": -0.001168
+        },
+        {
+          "token": " cache",
+          "logprob": -5.1e-05
+        },
+        {
+          "token": ",",
+          "logprob": -3e-06
+        },
+        {
+          "token": " continuous",
+          "logprob": -9.6e-05
+        },
+        {
+          "token": " batching",
+          "logprob": -2.8e-05
+        },
+        {
+          "token": ",",
+          "logprob": -6e-06
+        },
+        {
+          "token": " speculative",
+          "logprob": -0.001907
+        },
+        {
+          "token": " decoding",
+          "logprob": -0.001159
+        },
+        {
+          "token": ",",
+          "logprob": -2e-06
+        },
+        {
+          "token": " quant",
+          "logprob": -0.000448
+        },
+        {
+          "token": "ization",
+          "logprob": -5.8e-05
+        },
+        {
+          "token": ",",
+          "logprob": -3e-06
+        },
+        {
+          "token": " CUDA",
+          "logprob": -4.8e-05
+        },
+        {
+          "token": " graphs",
+          "logprob": -0.000547
+        },
+        {
+          "token": ",",
+          "logprob": -5e-06
+        },
+        {
+          "token": " and",
+          "logprob": -0.000583
+        }
+      ]
+    },
+    "chat": {
+      "prompt_tokens": 118,
+      "cached_tokens": 0,
+      "completion_tokens": 600,
+      "ttft_s": 0.2753,
+      "decode_s": 4.2034,
+      "total_s": 4.4787,
+      "prefill_tok_s": 428.6,
+      "decode_tok_s": 142.5,
+      "wall_tok_s": 134.0,
+      "reasoning_len": 1765,
+      "content_len": 0,
+      "reasoning_text": "We need answer user's request: \"Explain in depth how TCP Cubic and TCP BBR differ in congestion control, how BBR estimates bottleneck bandwidth and minimum RTT, why bufferbloat breaks loss-based algorithms, and what fairness issues arise when Cubic and BBR flows share a bottleneck queue.\"\n\nNeed produce final answer thorough. Need think through technical details.\n\nWe need cover:\n- TCP Cubic congestion control: loss-based, window growth based on time since last loss, cubic function, fast convergence, RTT fairness? Cwnd = W(t) = C(t-K)^3 + Wmax, K = (Wmax*C)^(1/3). In Reno-like AIMD? Cubic uses loss-based, cwnd grows until loss, then multiplicative decrease (0.7? beta=0.7? Cubic uses 0.7? Actually CUBIC: Wmax = cwnd before loss, cwnd *= 0.7? beta=0.7? Some implementations 0.7? Linux CUBIC beta=0.7? Yes). It uses RTT to estimate? It has TCP-friendly region for small RTT? It uses cwnd growth based on time since last loss, not RTT directly except K? It is loss-based, relies on packet loss as congestion signal. It fills buffers, can cause bufferbloat.\n- BBR: model-based, estimates bottleneck bandwidth (BtlBw) and minimum RTT (RTprop), sets sending rate = pacing_gain * BtlBw, inflight = pacing_gain * BtlBw * RTprop (or cwnd = pacing_gain * BDP). It doesn't rely on loss; uses ACKs, delivery rate, RTT. States: Startup, Drain, ProbeBW, ProbeRTT. Startup: exponential increase to find BtlBw. Drain: reduce inflight to target while probing RTT. ProbeBW: cycle through 8 pacing gains (0.75,1,1.25,1,1,1,1.25,1.25? Actually gains: 0.75, 1, 1.25, 1, 1, 1, 1.25, 1.25? Let's recall BBRv1 ProbeBW gain cycle: [0.75, 1, 1.25, 1, 1, 1, 1.25, 1.25]? Wait BBRv1: cycle of 8 gains: 0.75, 1, 1.25, 1, 1, 1, 1.25, 1.25? I think yes? Some sources: 0.75, 1, 1.25, 1, 1, ",
+      "content_text": "",
+      "logprobs_head": []
+    }
+  },
+  "decode_1u_sampled": {
+    "prompt_tokens": 117,
+    "cached_tokens": 0,
+    "completion_tokens": 600,
+    "ttft_s": 0.2752,
+    "decode_s": 5.799,
+    "total_s": 6.0743,
+    "prefill_tok_s": 425.1,
+    "decode_tok_s": 103.3,
+    "wall_tok_s": 98.8,
+    "reasoning_len": 2557,
+    "content_len": 0,
+    "reasoning_text": "We need answer to user: \"Write a complete, well-commented Python implementation of an in-memory LRU cache with per-key TTL expiration, thread safety via threading.RLock, O(1) get/put via a custom doubly-linked list, and a unittest suite.\"\n\nNeed provide Python code, complete, well-commented, unittest suite. Need likely include implementation and tests. Need ensure per-key TTL, LRU eviction, thread safety using threading.RLock, O(1) get/put via custom doubly-linked list. Need maybe include type hints, time.monotonic? For TTL use time.monotonic or configurable time_func. Need careful with expired entries. O(1) average. Could implement Node, DoublyLinkedList, LRUCache. Thread safe RLock. Need maybe support optional maxsize, maxsize None means unbounded. Need handle update value/ttl on put: if exists, move to end, update value/expires_at. On get: if expired, remove node and return sentinel/default? Could return None or raise KeyError? Need define API. Complete. Could include get(key, default=None), put(key,value,ttl=None), delete, clear, len, keys? Also stats maybe. Need tests use unittest. Need ensure TTL expiration: when get or put checks if expired; also on put if key expired remove old. Could have internal _remove_expired_node. Use time.monotonic() by default; injectable clock for deterministic tests.\n\nNeed think about thread safety with RLock. Operations must hold lock. RLock permits reentrant if calls internal methods? We can call internal helpers assuming lock held. Need be careful get calls _move_to_tail etc without lock, under public lock. Use _is_expired method. Custom DLL: head/tail dummy nodes, add_node, remove_node, move_to_end, pop_front. O(1). Store dict key -> node. Node stores key,value,expires_at. Need sentinel. Maybe no sentinel, use object().\n\nNeed write code as one file. Use __main__ maybe tests. Need include if __name__ == '__main__': unittest.main() so user can run. Need well-commented.\n\nPotential pitfalls: TTL with None means no expiration. maxsize int >0? If maxsize=0? Could raise ValueError or cache empty? Better allow positive only, maxsize=None unbounded. If maxsize <=0 raise.\n\nThread safety: RLock used. Could include maxsize eviction: when size exceeds maxsize after put, evict LRU (head.next). If same key update size unchanged. Need ensure if expired removed then put new. For put: acquire lock; node = map.get(key); if node: if expired remove node; if node exists then update and move_to_end. If not exists: create node; add to tail; map[key]=node; if maxsize and len(map)>maxsize: evict LRU.",
+    "content_text": "",
+    "logprobs_head": []
+  },
+  "decode_4u": {
+    "wall_s": 6.064,
+    "total_tokens": 1600,
+    "wall_agg_tok_s": 263.9,
+    "sum_stream_tok_s": 372.4
+  },
+  "prefill": {
+    "lde-00018": {
+      "prompt_tokens": 32978,
+      "cached_tokens": 0,
+      "completion_tokens": 128,
+      "ttft_s": 7.4516,
+      "decode_s": 0.6993,
+      "total_s": 8.1509,
+      "prefill_tok_s": 4425.6,
+      "decode_tok_s": 181.6,
+      "wall_tok_s": 15.7,
+      "reasoning_len": 424,
+      "content_len": 0,
+      "reasoning_text": "We need answer user's request: \"Summarise the key program IDs and main facts in two sentences.\" Need likely extract key program IDs and main facts from provided document. Need two sentences. Need identify key program IDs? The document has many PRG IDs, but key ones likely referenced in sections: PRG-8358, PRG-2325, PRG-8429, PRG-1957, PRG-9902, PRG-1952, PRG-3570 maybe. Need summarize key program IDs and main facts. Need",
+      "content_text": "",
+      "logprobs_head": []
+    },
+    "lde-00029": {
+      "prompt_tokens": 132557,
+      "cached_tokens": 0,
+      "completion_tokens": 128,
+      "ttft_s": 30.02,
+      "decode_s": 0.6633,
+      "total_s": 30.6833,
+      "prefill_tok_s": 4415.6,
+      "decode_tok_s": 191.5,
+      "wall_tok_s": 4.2,
+      "reasoning_len": 468,
+      "content_len": 0,
+      "reasoning_text": "We need answer user's request: \"Summarise the key program IDs and main facts in two sentences.\" Need likely extract key program IDs and main facts from huge document. Need produce two sentences. Need identify key program IDs? The brief references PRG-6291 Delta HVDC Expansion, PRG-1027 Nordic Protection Modernization, PRG-2072 Nordic Reactive Power Upgrade. Also program timeline includes PRG-8857, PRG-1688, PRG-6291 dates. Budget allocation includes PRG-6291, PRG-",
+      "content_text": "",
+      "logprobs_head": []
+    }
+  },
+  "multiturn": [
+    {
+      "turn": 1,
+      "prompt_tokens": 32977,
+      "cached_tokens": 0,
+      "completion_tokens": 512,
+      "ttft_s": 7.4854,
+      "decode_tok_s": 171.3
+    },
+    {
+      "turn": 2,
+      "prompt_tokens": 33518,
+      "cached_tokens": 29376,
+      "completion_tokens": 512,
+      "ttft_s": 1.1729,
+      "decode_tok_s": 60.4
+    },
+    {
+      "turn": 3,
+      "prompt_tokens": 34058,
+      "cached_tokens": 31824,
+      "completion_tokens": 512,
+      "ttft_s": 0.7256,
+      "decode_tok_s": 168.1
+    },
+    {
+      "turn": 4,
+      "prompt_tokens": 34598,
+      "cached_tokens": 32640,
+      "completion_tokens": 128,
+      "ttft_s": 0.6027,
+      "decode_tok_s": 60.8
+    }
+  ],
+  "stress_6u": {
+    "wall_s": 20.16,
+    "ok": true
+  },
+  "vram_peak": {
+    "peak_used_mib": 64458,
+    "min_free_mib": 454,
+    "spike_mib": 380
+  },
+  "vram_final": {
+    "used_mib": 64458,
+    "free_mib": 454,
+    "total_mib": 65536
+  }
+}

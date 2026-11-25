@@ -1,0 +1,16 @@
+ARG BASE_IMAGE=vllm-cmp170hx:qwen3.8-flash-next
+FROM ${BASE_IMAGE}
+
+# Upgrade humming-kernels to 0.1.20 (SM80 mma_m8, ldmatrix dequant)
+RUN /workspace/vllm/.venv/bin/pip install --no-cache-dir --upgrade humming-kernels==0.1.20
+
+# Install SM80 kernels into site-packages and apply vLLM SM80 patches
+COPY sm80-overlay/site/fn_sm80_hc.py /workspace/vllm/.venv/lib/python3.12/site-packages/
+COPY sm80-overlay/site/fn_sm80_thin_gemm.py /workspace/vllm/.venv/lib/python3.12/site-packages/
+COPY sm80-overlay/site/fn_sm80_moe_route.py /workspace/vllm/.venv/lib/python3.12/site-packages/
+COPY sm80-overlay/patches/vllm/ /workspace/vllm/src/vllm/
+
+ENV FN_SM80_HC=1 \
+    FN_SM80_THIN_GEMM=1 \
+    FN_SM80_MOE_ROUTE=1 \
+    FN_SM80_HUMMING_0120=1
